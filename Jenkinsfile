@@ -30,7 +30,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'CORTEX_API_ID', variable: 'cortex_api_id'),
                                  string(credentialsId: 'CORTEX_API_KEY', variable: 'cortex_api_key')]) {
                     script {
-                        docker.image('cortex/newCLI:latest').inside("--entrypoint=''") {
+                        docker.image('cortex/newcli:latest').inside("--entrypoint=''") {
                             unstash 'source'
                             try {
                                 // Run the Cortex scan
