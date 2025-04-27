@@ -5,13 +5,6 @@ pipeline {
         DOCKER_IMAGE = "qaiser55/hello-flask-app"
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/qs55/Calculator.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 script {
