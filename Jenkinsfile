@@ -29,7 +29,7 @@ pipeline {
         stage('Deploy to Server') {
             steps {
                 script {
-                    // SSH into the remote server and deploy the Docker container
+                    // Ensure the SSH Agent Plugin is installed and the credentials are set up correctly
                     sshagent(credentials: ['qs-jumbox']) {
                         sh """
                             ssh ${REMOTE_USER}@${REMOTE_SERVER} << 'EOF'
