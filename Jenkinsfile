@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "qaiser55/hello-flask-app"
+        CORTEX_API_URL = "https://api-cortex-cas.io"  // Define the API URL
     }
 
     stages {
@@ -19,6 +20,31 @@ pipeline {
                 withDockerRegistry(credentialsId: 'dockerhub', url: '') {
                     script {
                         docker.image(DOCKER_IMAGE).push()
+                    }
+                }
+            }
+        }
+
+        stage('Cortex Scan') {
+            steps {
+                withCredentials([string(credentialsId: 'CORTEX_API_ID', variable: 'cortex_api_id'),
+                                 string(credentialsId: 'CORTEX_API_KEY', variable: 'cortex_api_key')]) {
+                    script {
+                        docker.image('cortex/newCLI:latest').inside("--entrypoint=''") {
+                            unstash 'source'
+                            try {
+                                // Run the Cortex scan
+                                sh """
+                                    newCLI scan . -o cli=console,junitxml=results.xml --api-key ${cortex_api_id}::${cortex_api_key} --repo-id org/repo --branch main
+                                """
+                                // Publish the results of the scan
+                                junit skipPublishingChecks: true, testResults: 'results.xml'
+                            } catch (err) {
+                                // Ensure the results are published even if the scan fails
+                                junit skipPublishingChecks: true, testResults: 'results.xml'
+                                throw err
+                            }
+                        }
                     }
                 }
             }
