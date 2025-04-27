@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     // Ensure the SSH Agent Plugin is installed and the credentials are set up correctly
-                    sshagent(credentials: ['qs-jumbox']) {
+                    sshagent(credentials: ['qs-jumpbox']) {
                         sh """
                             ssh ${REMOTE_USER}@${REMOTE_SERVER} << 'EOF'
                             docker pull ${DOCKER_IMAGE}
